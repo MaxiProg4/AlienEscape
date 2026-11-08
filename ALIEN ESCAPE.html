@@ -1,0 +1,478 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+
+    <meta name="theme-color" content="#080817">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Alien Escape">
+    <link rel="manifest" href="manifest.webmanifest">
+
+    <title>ALIEN ESCAPE</title>
+
+    <!-- CONEXIÓN CSS -->
+    <link rel="stylesheet" href="StyleSheet1.css">
+</head>
+
+<body>
+
+    <!-- FONDO ESPACIAL -->
+
+    <div class="stars"></div>
+    <div class="stars stars2"></div>
+
+    <!-- HUD DEL JUEGO -->
+
+    <div id="hud" class="hidden">
+
+        <span>
+            SCORE: <b id="score">0</b>
+        </span>
+
+        <span>
+            RECORD: <b id="record">0</b>
+        </span>
+
+        <span id="fpsDisplay">
+            FPS: <b id="fps">0</b>
+        </span>
+
+        <span id="superChargeText">SUPERCARGA: COMPRA POR 300</span>
+        <div id="superChargeBar" aria-label="Carga de supercarga">
+            <span id="superChargeFill"></span>
+        </div>
+
+    </div>
+
+    <section id="spotifyNowPlaying" class="spotify-card">
+        <img id="spotifyCover" class="spotify-cover hidden" alt="Portada de Spotify">
+        <div class="spotify-info">
+            <span class="spotify-label">♫ SPOTIFY</span>
+            <strong id="spotifyTrack">Sin reproducción activa</strong>
+            <span id="spotifyArtist">Conecta Spotify para ver tu música</span>
+            <small id="spotifyStatus">Spotify no conectado</small>
+        </div>
+        <button id="spotifyConnectBtn" class="spotify-connect-btn" data-spotify-connect>CONECTAR SPOTIFY</button>
+        <div class="spotify-playback-controls">
+            <button type="button" data-spotify-action="toggle" aria-label="Reproducir o pausar Spotify">▶</button>
+            <button type="button" data-spotify-action="next" aria-label="Siguiente canción de Spotify">⏭</button>
+        </div>
+    </section>
+
+    <!-- CANVAS -->
+
+    <canvas id="game"
+            width="640"
+            height="400">
+    </canvas>
+
+    <div id="controlsHint" aria-label="Controles del juego">
+        <span class="controls-title">CONTROLES</span>
+        <span><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> MOVER</span>
+        <span><kbd>X</kbd> O <kbd>ESPACIO</kbd> DISPARAR</span>
+    </div>
+
+    <div id="mobileControls" aria-label="Controles táctiles">
+        <div class="mobile-dpad">
+            <button data-mobile-key="arrowup">▲</button>
+            <button data-mobile-key="arrowleft">◀</button>
+            <button data-mobile-key="arrowdown">▼</button>
+            <button data-mobile-key="arrowright">▶</button>
+        </div>
+        <button class="mobile-fire" data-mobile-key="x">DISPARAR</button>
+    </div>
+
+    <!-- MÚSICA -->
+
+    <audio id="music"
+           src="music/menu-theme.mp3"
+           preload="auto"
+           loop>
+    </audio>
+
+    <!-- OVERLAY -->
+
+    <div id="overlay">
+
+        <!-- MENÚ PRINCIPAL -->
+
+        <div class="panel" id="mainMenu">
+
+            <div class="game-logo">
+
+                <p class="logo-small">
+                    SPACE SURVIVAL GAME
+                </p>
+
+                <h1>
+                    ALIEN
+                    <span>ESCAPE</span>
+                </h1>
+
+                <p class="subtitle">
+                    SURVIVE THE GALAXY
+                </p>
+
+            </div>
+
+            <div class="menu-buttons">
+
+                <button id="startBtn" class="play-button">
+                    ▶ JUGAR
+                </button>
+
+                <button id="optionsBtn">
+                    ⚙ OPCIONES
+                </button>
+
+                <button id="upgradesBtn">
+                    🚀 MEJORAR NAVE
+                </button>
+
+                <button id="musicBtn">
+                    ♫ MÚSICA
+                </button>
+
+                <button class="spotify-menu-btn" data-spotify-connect>
+                    ♫ CONECTAR SPOTIFY
+                </button>
+
+            <div class="spotify-playback-controls spotify-menu-controls">
+                <button type="button" data-spotify-action="toggle">▶ REPRODUCIR / PAUSAR SPOTIFY</button>
+                <button type="button" data-spotify-action="next">⏭ SIGUIENTE</button>
+            </div>
+
+                <button id="leaderboardBtn">
+                    🏆 CALIFICACIONES
+                </button>
+
+                <button id="exitBtn">
+                    ✕ SALIR
+                </button>
+
+            </div>
+
+            <div class="menu-footer">
+
+                <span>ALIEN ESCAPE</span>
+
+                <span>VERSION BETA</span>
+
+                <a class="download-link"
+                   href="release/Alien-Escape-Portable-2.0.0.exe"
+                   download>
+                    DESCARGAR
+                </a>
+
+            </div>
+
+        </div>
+
+        <!-- MENÚ DE MÚSICA -->
+
+        <div class="panel hidden" id="musicMenu">
+
+            <div class="section-title">
+                <span>♫</span>
+                <h1>MÚSICA</h1>
+            </div>
+
+            <div class="now-playing-card">
+                <p class="option-description">REPRODUCIENDO AHORA</p>
+                <h2 id="nowPlaying">Menu Theme</h2>
+            </div>
+
+            <button class="spotify-menu-btn" data-spotify-connect>
+                ♫ CONECTAR SPOTIFY
+            </button>
+
+            <label class="select-label" for="musicTrack">CAMBIAR CANCIÓN</label>
+            <select id="musicTrack" class="game-select"></select>
+
+            <div class="music-controls">
+                <button id="musicPlayBtn" class="play-button">▶ REPRODUCIR</button>
+                <button id="musicStopBtn">■ DETENER</button>
+            </div>
+
+            <button id="musicBackBtn">← VOLVER AL MENÚ</button>
+
+        </div>
+
+        <!-- MENÚ DE CALIFICACIONES -->
+
+        <div class="panel hidden" id="leaderboardMenu">
+
+            <div class="section-title">
+                <span>🏆</span>
+                <h1>CALIFICACIONES</h1>
+            </div>
+
+            <div class="comparison-card">
+                <p>SUPERVIVENCIA ACTUAL</p>
+                <strong id="currentScoreComparison">0 puntos · Mejor: 0</strong>
+            </div>
+
+            <label class="select-label" for="leaderboardPeriod">PERIODO</label>
+            <select id="leaderboardPeriod" class="game-select">
+                <option value="day">CALIFICACIÓN DEL DÍA</option>
+                <option value="week">CALIFICACIÓN DE LA SEMANA</option>
+                <option value="month">CALIFICACIÓN DEL MES</option>
+                <option value="year">CALIFICACIÓN DEL AÑO</option>
+                <option value="all">CALIFICACIÓN HISTÓRICA</option>
+            </select>
+
+            <div class="leaderboard-card period-leaderboard-card">
+                <h2 id="leaderboardTitle">CALIFICACIÓN DEL DÍA</h2>
+                <ol id="periodLeaderboard"></ol>
+            </div>
+
+            <button id="leaderboardBackBtn" class="play-button">
+                ← VOLVER AL MENÚ
+            </button>
+
+        </div>
+
+        <!-- MENÚ DE OPCIONES -->
+
+        <div class="panel hidden" id="optionsMenu">
+
+            <div class="section-title">
+
+                <span>⚙</span>
+
+                <h1>OPCIONES</h1>
+
+            </div>
+
+            <div class="option-card">
+
+                <p>MÚSICA DEL JUEGO</p>
+
+                <p class="option-description">
+                    Activa o desactiva la música y ajusta su volumen
+                </p>
+
+                <label class="audio-toggle" for="musicEnabled">
+                    <span>MÚSICA</span>
+                    <input type="checkbox" id="musicEnabled" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+
+                <input type="range"
+                       id="volume"
+                       min="0"
+                       max="100"
+                       value="40">
+
+                <div class="volume-label">
+
+                    <span>VOLUMEN</span>
+
+                    <span id="volumeValue">40%</span>
+
+                </div>
+
+            </div>
+
+            <div class="option-card interface-options">
+                <p>INTERFAZ Y RENDIMIENTO</p>
+                <p class="option-description">Configura la información y los efectos visuales durante la partida.</p>
+
+                <label class="audio-toggle" for="showFps">
+                    <span>VER FPS</span>
+                    <input type="checkbox" id="showFps" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+
+                <label class="audio-toggle" for="showControls">
+                    <span>VER CONTROLES</span>
+                    <input type="checkbox" id="showControls" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+
+                <label class="audio-toggle" for="transparentUi">
+                    <span>FONDOS TRANSPARENTES</span>
+                    <input type="checkbox" id="transparentUi">
+                    <span class="toggle-slider"></span>
+                </label>
+
+                <label class="audio-toggle" for="motionBlur">
+                    <span>MOTION BLUR</span>
+                    <input type="checkbox" id="motionBlur">
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+
+            <button id="backBtn" class="play-button">
+                ← VOLVER AL MENÚ
+            </button>
+
+        </div>
+
+        <!-- MENÚ DE MEJORAS -->
+
+        <div class="panel hidden" id="upgradesMenu">
+
+            <div class="section-title">
+                <span>🚀</span>
+                <h1>MEJORAS</h1>
+            </div>
+
+            <div class="comparison-card upgrade-balance-card">
+                <p>PUNTOS DISPONIBLES</p>
+                <strong id="upgradeScore">0</strong>
+            </div>
+
+            <div class="upgrade-card">
+                <div>
+                    <h2 id="doubleShotTitle">DISPARO DOBLE</h2>
+                    <p>Mejora a doble, triple y cuádruple disparo.</p>
+                    <small>Nivel <b id="doubleShotLevel">0</b> · Coste: <b id="doubleShotCost">50</b></small>
+                </div>
+
+            <div class="upgrade-card">
+                <div>
+                    <h2>VELOCIDAD DE NAVE</h2>
+                    <p>Aumenta la velocidad de movimiento.</p>
+                    <small>Nivel <b id="shipSpeedLevel">0</b> · Coste: <b id="shipSpeedCost">80</b></small>
+                </div>
+                <button id="shipSpeedBtn" class="play-button">COMPRAR</button>
+            </div>
+
+            <div class="upgrade-card">
+                <div>
+                    <h2>SUPERCARGA Q</h2>
+                    <p>Compra el rayo poderoso por 300 puntos. Se carga destruyendo objetos.</p>
+                    <small>Coste: <b id="superChargeCost">300</b> · Q para disparar</small>
+                </div>
+                <button id="superChargeBtn" class="play-button">COMPRAR</button>
+            </div>
+                <button id="doubleShotBtn" class="play-button">COMPRAR</button>
+            </div>
+
+            <div class="upgrade-card">
+                <div>
+                    <h2>CADENCIA RÁPIDA</h2>
+                    <p>Reduce el tiempo entre disparos.</p>
+                    <small>Nivel <b id="rapidFireLevel">0</b> · Coste: <b id="rapidFireCost">40</b></small>
+                </div>
+                <button id="rapidFireBtn" class="play-button">COMPRAR</button>
+            </div>
+
+            <button id="upgradesBackBtn">← VOLVER AL MENÚ</button>
+
+        </div>
+
+        <!-- GAME OVER -->
+
+        <div class="panel hidden" id="gameOverMenu">
+
+            <div class="gameover-icon">
+                ☠
+            </div>
+
+            <p class="logo-small">
+                MISSION FAILED
+            </p>
+
+            <h1 class="gameover-title">
+                GAME OVER
+            </h1>
+
+            <p class="option-description">
+                Tu nave ha sido destruida
+            </p>
+
+            <div class="score-card">
+
+                <p>PUNTUACIÓN FINAL</p>
+
+                <h2 id="finalScore">0</h2>
+
+                <p>
+                    RÉCORD:
+                    <span id="gameOverRecord">0</span>
+                </p>
+
+            </div>
+
+            <div class="record-form">
+
+                <label for="playerName">TU NOMBRE</label>
+
+                <input id="playerName"
+                       type="text"
+                       maxlength="16"
+                       placeholder="Escribe tu nombre">
+
+                <label for="playerCountry">TU BANDERA</label>
+                <select id="playerCountry" class="game-select">
+                    <option value="🌐">🌐 Internacional</option>
+                    <option value="🇪🇸">🇪🇸 España</option>
+                    <option value="🇲🇽">🇲🇽 México</option>
+                    <option value="🇦🇷">🇦🇷 Argentina</option>
+                    <option value="🇨🇴">🇨🇴 Colombia</option>
+                    <option value="🇨🇱">🇨🇱 Chile</option>
+                    <option value="🇵🇪">🇵🇪 Perú</option>
+                    <option value="🇻🇪">🇻🇪 Venezuela</option>
+                    <option value="🇺🇸">🇺🇸 Estados Unidos</option>
+                    <option value="🇧🇷">🇧🇷 Brasil</option>
+                    <option value="🇫🇷">🇫🇷 Francia</option>
+                    <option value="🇩🇪">🇩🇪 Alemania</option>
+                    <option value="🇮🇹">🇮🇹 Italia</option>
+                    <option value="🇬🇧">🇬🇧 Reino Unido</option>
+                    <option value="🇯🇵">🇯🇵 Japón</option>
+                </select>
+
+                <button id="saveRecordBtn" class="play-button">
+                    GUARDAR RÉCORD
+                </button>
+
+            </div>
+
+            <div class="leaderboard-card">
+
+                <h2>MEJORES PUNTUACIONES</h2>
+
+                <ol id="leaderboard"></ol>
+
+            </div>
+
+            <button id="restartBtn" class="play-button">
+                ↻ VOLVER A JUGAR
+            </button>
+
+            <button id="gameOverUpgradesBtn">
+                🚀 MEJORAR NAVE CON TUS PUNTOS
+            </button>
+
+            <button id="menuBtn">
+                MENÚ PRINCIPAL
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- CONEXIÓN JAVASCRIPT -->
+
+    <script>
+        Object.assign(window, {
+            onSpotifyWebPlaybackSDKReady: () => {
+                document.dispatchEvent(new Event("spotify-sdk-ready"));
+            }
+        });
+    </script>
+    <script src="spotify-config.js" defer></script>
+    <script src="spotify.js" defer></script>
+    <script src="https://sdk.scdn.co/spotify-player.js" defer></script>
+    <script src="Script1.js" defer></script>
+
+</body>
+</html>

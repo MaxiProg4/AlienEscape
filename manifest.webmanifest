@@ -1,0 +1,13 @@
+{
+  "name": "Alien Escape",
+  "short_name": "Alien Escape",
+  "description": "Juego arcade espacial de supervivencia.",
+  "lang": "es",
+  "start_url": "./HTMLPage1.html",
+  "scope": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#080817",
+  "theme_color": "#080817",
+  "categories": ["games", "entertainment"]
+}

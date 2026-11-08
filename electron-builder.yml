@@ -1,0 +1,19 @@
+appId: com.alienescape.game
+productName: Alien Escape
+asar: true
+files:
+  - HTMLPage1.html
+  - Script1.js
+  - StyleSheet1.css
+  - spotify.js
+  - spotify-config.js
+  - music/**/*
+  - electron/**/*
+  - package.json
+directories:
+  output: release
+win:
+  target:
+    - portable
+portable:
+  artifactName: Alien-Escape-Portable-${version}.${ext}

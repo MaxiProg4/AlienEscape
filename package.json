@@ -1,0 +1,49 @@
+{
+  "name": "alien-escape",
+  "version": "2.0.0",
+  "description": "Alien Escape: juego espacial portable con Discord RPC",
+  "main": "electron/main.js",
+  "author": "Alien Escape",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist": "electron-builder --win portable",
+    "dist:installer": "electron-builder --win nsis"
+  },
+  "dependencies": {
+    "discord-rpc": "^4.0.1"
+  },
+  "devDependencies": {
+    "electron": "^35.0.0",
+    "electron-builder": "^26.0.12",
+    "eslint": "^10.14.0"
+  },
+  "build": {
+    "appId": "com.alienescape.game",
+    "productName": "Alien Escape",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "HTMLPage1.html",
+      "manifest.webmanifest",
+      "service-worker.js",
+      "Script1.js",
+      "StyleSheet1.css",
+      "spotify.js",
+      "spotify-config.js",
+      "music/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ]
+    },
+    "portable": {
+      "artifactName": "Alien-Escape-Portable-${version}.${ext}"
+    }
+  }
+}
